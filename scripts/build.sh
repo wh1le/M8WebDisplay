@@ -50,13 +50,33 @@ sass --style=compressed src/css/index.scss >build/index.css
 echo "Building build/main.js"
 rollup src/js/main.js | terser --mangle --toplevel --compress >build/main.js
 
+# Inline index.css and main.js by hand. juice round-trips the document through
+# an HTML parser which HTML-escapes text nodes (">" becomes "&gt;", "&&" becomes
+# "&amp;&amp;"), corrupting the inlined bundle so it no longer parses.
 echo "Building build/index.html"
-sed "s/BUILDNUM/$(date -u +"%Y-%m-%dT%H:%M:%S") $(git rev-parse --short HEAD)$(test -z "$(git status --porcelain)" || printf X)/" src/index.html |
+if [ -n "${M8_BUILD_ID:-}" ]; then
+	build_id="$M8_BUILD_ID"
+else
+	build_id="$(date -u +"%Y-%m-%dT%H:%M:%S") $(git rev-parse --short HEAD 2>/dev/null || printf unknown)"
+	if [ -n "$(git status --porcelain 2>/dev/null)" ]; then
+		build_id="$build_id"X
+	fi
+fi
+sed "s/BUILDNUM/$build_id/" src/index.html |
 	sed -e "s|\"src/assets/favicon.png\"|\"data:image/png;base64,$($BASE64 src/assets/favicon.png)\"|" |
 	sed -e 's/^ *//' |
-	perl -0pe 's/>[ \t\r\n]+</></g' >build/index.html.tmp
-juice --apply-style-tags false --remove-style-tags false build/index.html.tmp build/index.html
-rm build/index.html.tmp
+	perl -0pe 's/>[ \t\r\n]+</></g' |
+	perl -0777pe '
+		BEGIN {
+			local $/ = undef;
+			open my $css_fh, "<", "build/index.css" or die $!;
+			$css = <$css_fh>;
+			open my $js_fh, "<", "build/main.js" or die $!;
+			$js = <$js_fh>;
+		}
+		s{<link rel="stylesheet" href="index\.css">}{"<style>$css</style>"}e;
+		s{<script type="module" src="main\.js"></script>}{"<script>$js</script>"}e;
+	' >build/index.html
 
 echo "Copying public files"
 cp public/icon.png public/app.webmanifest build/

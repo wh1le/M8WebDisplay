@@ -1,15 +1,23 @@
 {
+  "name": "m8-web-display",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Web display for M8 Headless",
+  "author": "James Deery",
+  "license": "MIT",
   "type": "module",
-  "dependencies": {
+  "main": "electron/main.cjs",
+  "desktopName": "m8-web-display.desktop",
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.14",
+    "@types/node": "^26.6.2",
+    "electron": "^44.4.5",
+    "electron-builder": "^26.15.3",
     "juice": "^7.0.0",
     "local-web-server": "^5.3.0",
     "rollup": "^2.38.1",
     "sass": "^1.32.5",
-    "terser": "^5.5.1"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "^2.5.14",
-    "@types/node": "^26.6.2",
+    "terser": "^5.5.1",
     "typescript": "^7.0.2"
   },
   "scripts": {
@@ -18,8 +26,28 @@
     "dev:https": "scripts/cert.sh && scripts/build.sh && node src/js/server.js --key cert/private-key.pem --cert cert/server.crt",
     "serve": "node src/js/server.js --port 8000",
     "deploy": "scripts/build.sh && mkdir -p deploy && rm -rf deploy/* && cp build/index.html build/worker.js build/app.webmanifest build/icon.png deploy/",
+    "electron": "scripts/build.sh && electron .",
+    "package": "scripts/build.sh && electron-builder --linux AppImage",
     "clean": "rm -rf build",
     "lint": "biome check .",
     "lint:fix": "biome check --write ."
+  },
+  "build": {
+    "appId": "dev.m8webdisplay.app",
+    "productName": "M8 Web Display",
+    "artifactName": "M8WebDisplay.${ext}",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "electron/**/*",
+      "build/**/*"
+    ],
+    "linux": {
+      "target": "AppImage",
+      "category": "AudioVideo",
+      "syncDesktopName": true,
+      "icon": "public/icon-512.png"
+    }
   }
 }

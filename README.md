@@ -66,14 +66,47 @@ This will build and copy the release files to the `deploy/` directory. These fil
 ```
 public/   files copied to the deploy root unchanged (icon.png, app.webmanifest)
 src/      all source: index.html, js/, css/, shaders/ and the assets embedded by the build
-scripts/  build.sh, ws.sh, cert.sh
+scripts/  build.sh, ws.sh, cert.sh, m8web.sh
+electron/ Electron shell (main.cjs)
 build/    generated output, not tracked
+dist/     packaged AppImages, not tracked
 ```
 
 `index.html` refers to files the way the finished site lays them out (`index.css`,
 `main.js`, `worker.js`, `icon.png`, `app.webmanifest`). The dev server serves the
 repository root and rewrites those paths to the matching sources, so the same markup
 works before and after a build.
+
+## Desktop app (Electron)
+
+The display can be wrapped in an Electron shell so that it runs like a native
+app. This is mainly useful on a Steam Deck, where it can then be added as a
+non-Steam game.
+
+```
+pnpm electron   # build and run in an Electron window
+pnpm package    # build dist/M8WebDisplay.AppImage
+```
+
+`electron/main.cjs` loads `build/index.html` and replaces the browser's device
+pickers with automatic selection of the M8 at the session level, so no
+permission prompt is shown. Links in the page are opened in the system browser
+instead of navigating the display away.
+
+### Steam Deck
+
+1. Copy `dist/M8WebDisplay.AppImage` to `~/Applications/` and make it
+executable.
+2. Give your user access to the M8's serial port. Create
+`/etc/udev/rules.d/99-m8-headless.rules` containing
+`SUBSYSTEM=="tty", ATTRS{idVendor}=="16c0", MODE="0666"`, then run
+`sudo udevadm control --reload && sudo udevadm trigger`.
+3. Add `scripts/m8web.sh` as a non-Steam game (Games → Add a Non-Steam Game).
+It runs the AppImage with `--no-sandbox`, which SteamOS needs when Electron is
+launched from Steam. Set `M8WEB_APPIMAGE` if the AppImage lives elsewhere.
+4. In Gaming Mode the display enables its on-screen controls automatically
+(1280×800 touch screen). Bind the Deck controls to A, S, Z, X and the arrow
+keys for keyboard-style play.
 
 ## TODO/Ideas
 
