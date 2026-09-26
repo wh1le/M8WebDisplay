@@ -1,6 +1,6 @@
 import * as Keyboard from "./keyboard.js";
 import * as Settings from "./settings.js";
-import { appendButton, off, on } from "./util.js";
+import { appendButton, off, on, steamDeck } from "./util.js";
 
 let connection;
 let keyState = 0;
@@ -45,8 +45,14 @@ const defaultInputMap = Object.freeze({
 
 const inputMap = {};
 
+let activeSource = null;
+let selectedSource = null;
+
 function handleInput(input, isDown, e) {
   if (!input) return;
+
+  activeSource = input.startsWith("Gamepad") ? gamepadSource() : "keyboard";
+  renderMappings();
 
   if (resolveCapture) {
     e?.preventDefault();
@@ -115,6 +121,7 @@ export function setup(connection_) {
   appendButton("#mapping-buttons", "Reset to Default", resetMappings);
   appendButton("#mapping-buttons", "Clear All", clearMappings);
   appendButton("#mapping-buttons", "Done", stopMapping);
+  setupMappingInfo();
 
   Object.assign(inputMap, Settings.load("inputMap", defaultInputMap));
 }
@@ -217,6 +224,8 @@ on(window, "gamepadconnected", (e) => {
     console.warn("Non-standard gamepad attached. Mappings may be funny.");
   }
 
+  renderMappings();
+
   if (!gamepadsRunning) {
     gamepadsRunning = true;
     pollGamepads();
@@ -225,15 +234,130 @@ on(window, "gamepadconnected", (e) => {
 
 on(window, "gamepaddisconnected", (e) => {
   gamepadStates[e.gamepad.index] = null;
+  renderMappings();
 });
 
 export let isMapping = false;
 let resolveMapping = null;
 let resolveCapture = null;
 
+const inputNames = {
+  ShiftLeft: "Left Shift",
+  ShiftRight: "Right Shift",
+  ControlLeft: "Left Ctrl",
+  ControlRight: "Right Ctrl",
+  AltLeft: "Left Alt",
+  AltRight: "Right Alt",
+  MetaLeft: "Left Meta",
+  MetaRight: "Right Meta",
+};
+
+function inputName(input) {
+  if (inputNames[input]) return inputNames[input];
+
+  const gamepad = /^Gamepad(Axis)?(\d+)([-+])?$/.exec(input);
+  if (gamepad) {
+    return `Gamepad${gamepad[1] ? " axis" : ""} ${gamepad[2]}${gamepad[3] ?? ""}`;
+  }
+
+  return input
+    .replace(/^Key/, "")
+    .replace(/^Digit/, "")
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2");
+}
+
+const deckButtons = {
+  0: "A",
+  1: "B",
+  2: "X",
+  3: "Y",
+  4: "L1",
+  5: "R1",
+  6: "L2",
+  7: "R2",
+  8: "View",
+  9: "Menu",
+  10: "L3",
+  11: "R3",
+  12: "D-pad Up",
+  13: "D-pad Down",
+  14: "D-pad Left",
+  15: "D-pad Right",
+  64: "D-pad Up",
+  65: "D-pad Down",
+  66: "D-pad Left",
+  67: "D-pad Right",
+};
+
+function deckName(input) {
+  const button = /^Gamepad(\d+)$/.exec(input);
+  return deckButtons[button?.[1]] ?? inputName(input);
+}
+
+const sources = {
+  keyboard: {
+    match: (input) => !input.startsWith("Gamepad"),
+    label: (input) => inputName(input),
+  },
+  controller: {
+    match: (input) => input.startsWith("Gamepad"),
+    label: (input) => inputName(input),
+  },
+  steamdeck: {
+    match: (input) => input.startsWith("Gamepad"),
+    label: (input) => deckName(input),
+  },
+};
+
+function gamepadSource() {
+  return steamDeck ? "steamdeck" : "controller";
+}
+
+function detectedSource() {
+  if (activeSource) return activeSource;
+
+  const connected = navigator.getGamepads?.().some((pad) => pad?.connected);
+  return connected ? gamepadSource() : "keyboard";
+}
+
+function setupMappingInfo() {
+  for (const button of document.querySelectorAll("#mapping-info > button")) {
+    on(button, "click", () => {
+      selectedSource = button.dataset.source;
+      renderMappings();
+    });
+  }
+}
+
+function renderMappings() {
+  if (!isMapping) return;
+
+  const selected = selectedSource ?? detectedSource();
+  const source = sources[selected];
+
+  const mapped = {};
+  for (const [input, action] of Object.entries(inputMap)) {
+    if (!source.match(input)) continue;
+
+    mapped[action] ??= [];
+    mapped[action].push(source.label(input));
+  }
+
+  for (const button of document.querySelectorAll("#mapping-info > button")) {
+    button.classList.toggle("active", button.dataset.source === selected);
+  }
+
+  for (const key of document.querySelectorAll("#controls > div")) {
+    key.querySelector(".mapped").innerText = (mapped[key.dataset.action] ?? [])
+      .sort()
+      .join(", ");
+  }
+}
+
 export function startMapping() {
   isMapping = true;
   document.body.classList.add("mapping");
+  renderMappings();
   return new Promise((resolve) => {
     resolveMapping = resolve;
   });
@@ -243,6 +367,7 @@ export function stopMapping() {
   cancelCapture();
   document.body.classList.remove("mapping");
   isMapping = false;
+  selectedSource = null;
   resolveMapping?.();
 }
 
@@ -275,6 +400,8 @@ async function startMapKey(keyElement, action) {
     if (input) {
       inputMap[input] = action;
       Settings.save("inputMap", inputMap);
+      selectedSource = activeSource;
+      renderMappings();
     }
   } finally {
     keyElement.classList.remove("mapping");
@@ -290,6 +417,7 @@ export function resetMappings() {
   }
   Object.assign(inputMap, defaultInputMap);
   Settings.save("inputMap", inputMap);
+  renderMappings();
 }
 
 export function clearMappings() {
@@ -297,4 +425,5 @@ export function clearMappings() {
     delete inputMap[input];
   }
   Settings.save("inputMap", inputMap);
+  renderMappings();
 }

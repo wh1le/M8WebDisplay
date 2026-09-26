@@ -107,24 +107,15 @@
             position: absolute;
             width: 20.3125%;
             height: 27.0833%;
-            border: 3px solid #aaa;
-            border-radius: 10px;
-            background-color: #333;
-            box-sizing: border-box;
-            padding: 5px;
-            text-align: center;
             font-size: 80%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition-property: border-color, background-color;
-            transition-duration: 200ms;
 
             &[data-action="up"],
             &[data-action="down"],
             &[data-action="left"],
             &[data-action="right"] {
-                font-size: 160%;
+                .name {
+                    font-size: 160%;
+                }
             }
 
             &.active {
@@ -188,6 +179,56 @@
                 position: relative;
                 z-index: $shield-z + 1;
             }
+        }
+    }
+}
+
+#controls > div {
+    border: 3px solid #aaa;
+    border-radius: 10px;
+    background-color: #333;
+    box-sizing: border-box;
+    padding: 10px 5px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition-property: border-color, background-color;
+    transition-duration: 200ms;
+
+    .mapped {
+        display: none;
+        font-family: $m8-font;
+        font-size: 75%;
+        line-height: 1.2;
+        color: $m8;
+    }
+
+    body.mapping & .mapped {
+        display: block;
+    }
+}
+
+#mapping-info {
+    display: none;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px 3%;
+
+    body.mapping & {
+        display: flex;
+    }
+
+    button {
+        flex: 1;
+        max-width: 200px;
+        padding: 20px 10px;
+
+        &.active {
+            border-color: $m8;
+            color: $m8;
         }
     }
 }

@@ -1,3 +1,4 @@
+import { spawn } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -26,6 +27,14 @@ function option(name, fallback) {
 
 const key = option("key");
 const cert = option("cert");
+
+const sass = spawn(
+  path.join(root, "node_modules/.bin/sass"),
+  ["--watch", "--style=compressed", "src/css/index.scss:build/index.css"],
+  { cwd: root, stdio: "inherit" },
+);
+
+process.on("exit", () => sass.kill());
 
 const server = await LocalWebServer.create({
   directory: root,

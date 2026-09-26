@@ -25,15 +25,21 @@
         </div>
 
         <div id="controls">
-            <div data-action="edit" style="top: 2.0833%; left: 76.5625%">EDIT</div>
-            <div data-action="option" style="top: 2.0833%; left: 53.125%">OPTION</div>
-            <div data-action="up" style="top: 6.25%; left: 25%">▲</div>
-            <div data-action="left" style="top: 37.5%; left: 1.5625%">◀</div>
-            <div data-action="down" style="top: 37.5%; left: 25%">▼</div>
-            <div data-action="right" style="top: 37.5%; left: 48.4375%">▶</div>
-            <div data-action="select" style="top: 70.8333%; left: 27.3438%">SHIFT</div>
-            <div data-action="start" style="top: 70.8333%; left: 50.7813%">PLAY</div>
+            <div data-action="edit" style="top: 2.0833%; left: 76.5625%"><span class="name">EDIT</span><span class="mapped"></span></div>
+            <div data-action="option" style="top: 2.0833%; left: 53.125%"><span class="name">OPTION</span><span class="mapped"></span></div>
+            <div data-action="up" style="top: 6.25%; left: 25%"><span class="name">▲</span><span class="mapped"></span></div>
+            <div data-action="left" style="top: 37.5%; left: 1.5625%"><span class="name">◀</span><span class="mapped"></span></div>
+            <div data-action="down" style="top: 37.5%; left: 25%"><span class="name">▼</span><span class="mapped"></span></div>
+            <div data-action="right" style="top: 37.5%; left: 48.4375%"><span class="name">▶</span><span class="mapped"></span></div>
+            <div data-action="select" style="top: 70.8333%; left: 27.3438%"><span class="name">SHIFT</span><span class="mapped"></span></div>
+            <div data-action="start" style="top: 70.8333%; left: 50.7813%"><span class="name">PLAY</span><span class="mapped"></span></div>
         </div>
+    </div>
+
+    <div id="mapping-info">
+        <button type="button" data-source="controller">Controller</button>
+        <button type="button" data-source="keyboard">Keyboard</button>
+        <button type="button" data-source="steamdeck">Steam Deck</button>
     </div>
 
     <div id="serial-fail" class="error hidden">
