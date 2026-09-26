@@ -24,7 +24,6 @@ else
 	MD5 = md5sum
 endif
 
-
 index.html: build/index.css js/main.js
 
 js/main.js: $(filter-out js/main.js,$(wildcard js/*.js)) build/shaders.js build/font1.js build/font2.js
@@ -34,10 +33,10 @@ build/shaders.js: $(wildcard shaders/*.vert) $(wildcard shaders/*.frag)
 	@echo Building $@
 	@mkdir -p $(@D)
 	@for i in $^; do \
-	  printf "export const $$(basename $${i} | tr . _) = \`"; \
-	  sed 's/\/\/.*$$//g' $$i \
-	   | perl -0pe 's/([\n;,{}()\[\]=+\-*\/])[ \t\r\n]+/$$1/g'; \
-	  echo "\`;"; \
+		printf "export const $$(basename $${i} | tr . _) = \`"; \
+		sed 's/\/\/.*$$//g' $$i \
+		| perl -0pe 's/([\n;,{}()\[\]=+\-*\/])[ \t\r\n]+/$$1/g'; \
+		echo "\`;"; \
 	done > $@
 
 build/font1.js: font1.png
@@ -69,17 +68,17 @@ build/font1.scss: m8stealth57.woff2
 	@echo Building $@
 	@mkdir -p $(@D)
 	@printf "@font-face {\n\
-	    font-family: 'm8stealth57';\n\
-	    src: url('data:font/woff2;base64,$$($(BASE64) $^)') format('woff2');\n\
-	}" > $@
+	    font-family: 'm8stealth57';\n \
+	    src: url('data:font/woff2;base64,$$($(BASE64) $^)') format('woff2');\n \
+	    }" > $@
 
 build/font2.scss: m8stealth89.woff2
 	@echo Building $@
 	@mkdir -p $(@D)
 	@printf "@font-face {\n\
-	    font-family: 'm8stealth89';\n\
-	    src: url('data:font/woff2;base64,$$($(BASE64) $^)') format('woff2');\n\
-	}" > $@
+	    font-family: 'm8stealth89';\n \
+	    src: url('data:font/woff2;base64,$$($(BASE64) $^)') format('woff2');\n \
+	    }" > $@
 
 build/index.css: css/index.scss $(NPM)
 	@echo Building $@
@@ -109,21 +108,21 @@ cert/cert.conf: $(NPM)
 	@echo Building $@
 	@mkdir -p cert
 	@echo "[req]\n\
-	distinguished_name=dn\n\
-	req_extensions=ext\n\
-	prompt=no\n\
-	[dn]\n\
-	CN=DevCert\n\
-	OU=DEV\n\
-	[ext]\n\
-	keyUsage=nonRepudiation,digitalSignature,keyEncipherment\n\
-	basicConstraints=critical,CA:TRUE,pathlen:0\n\
-	subjectAltName=DNS:localhost,$$(\
-	  npx ws --list-network-interfaces \
-	   | grep '^-' \
-	   | sed -E 's/^- .+: ([0-9.]+)$$/IP:\1/g' \
-	   | sed -E 's/^- .+: (.+)$$/DNS:\1/g' \
-	   | paste -sd ',' -)" > $@
+	distinguished_name=dn\n \
+	req_extensions=ext\n \
+	prompt=no\n \
+	[dn]\n \
+	CN=DevCert\n \
+	OU=DEV\n \
+	[ext]\n \
+	keyUsage=nonRepudiation,digitalSignature,keyEncipherment\n \
+	basicConstraints=critical,CA:TRUE,pathlen:0\n \
+	subjectAltName=DNS:localhost,$$( \
+	npx ws --list-network-interfaces \
+	| grep '^-' \
+	| sed -E 's/^- .+: ([0-9.]+)$$/IP:\1/g' \
+	| sed -E 's/^- .+: (.+)$$/DNS:\1/g' \
+	| paste -sd ',' -)" > $@
 
 cert/private-key.pem:
 	@echo Building $@
