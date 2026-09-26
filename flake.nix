@@ -32,7 +32,6 @@
             packages = [
               pkgs.nodejs
               pkgs.pnpm
-              unstable.hunk
             ];
           };
         }

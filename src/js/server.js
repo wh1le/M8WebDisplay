@@ -9,9 +9,8 @@ const root = path.resolve(
   "../..",
 );
 
-// The site is served flat (`/main.js`, `/index.css`) both in development and
-// after a build. These rules point those URLs at the files they come from.
 const routes = [
+  ["/worker.js", "/src/js/dev-worker.js"],
   ["/", "/src/index.html"],
   ["/:name.css", "/build/:name.css"],
   ["/:name.js", "/src/js/:name.js"],
@@ -35,12 +34,14 @@ const server = await LocalWebServer.create({
   blacklist: ["/cert/private-key.pem"],
   logFormat: "dev",
   view: new CliView(),
+
   ...(key && { key, cert }),
 });
 
 server.on("verbose", (name, value) => {
   if (name === "server.error") {
-    console.error(`\n${value.message}`);
+    console.error(`\n  ${value.message}`);
+
     process.exitCode = 1;
   }
 });

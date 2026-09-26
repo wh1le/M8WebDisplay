@@ -1,5 +1,5 @@
 import { nativeAudio } from "./audio.js";
-import { appendButton, hide, on, toggle } from "./util.js";
+import { appendButton, hide, on, steamDeck, toggle } from "./util.js";
 
 on("#menu-button", "click", () => toggle("#settings"));
 
@@ -12,7 +12,7 @@ on("#settings", "click", (e) => {
 const actions = {};
 const values = {};
 
-setupToggle("showControls", "Show Controls", false);
+setupToggle("showControls", "Show Controls", steamDeck);
 setupToggle("hideMenu", "Hide Menu", false);
 setupToggle("enableAudio", "Enable Audio", !nativeAudio);
 

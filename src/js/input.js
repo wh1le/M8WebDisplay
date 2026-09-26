@@ -157,8 +157,6 @@ function pollGamepads() {
       for (let i = 0; i < gamepad.axes.length; i++) {
         if (state.axes[i].isHat === false) continue;
 
-        // Heuristics to locate a d-pad or
-        // "hat switch" masquerading as an axis
         const value = (gamepad.axes[i] + 1) * 3.5;
         const error = Math.abs(Math.round(value) - value);
         const hatPosition = hatMap[Math.round(value)];
@@ -167,11 +165,8 @@ function pollGamepads() {
           state.axes[i].isHat = false;
           continue;
         } else if (value === 0 && state.axes[i].isHat !== true) {
-          // could be a hat but could also be an unpressed trigger
           continue;
         } else {
-          // almost certainly a hat - we're very close to a "special"
-          // value and we haven't seen any invalid values
           state.axes[i].isHat = true;
         }
 

@@ -32,15 +32,20 @@ const resizeCanvas = (() => {
 
   function resize() {
     const ratio = devicePixelRatio;
-    const dW = display.clientWidth * ratio;
     const svg = document.getElementById("screen");
 
-    if (Settings.get("snapPixels") && dW <= 1600) {
-      let dH = display.clientHeight * ratio;
-      if (Settings.get("showControls") || Input.isMapping) {
+    let dW = display.clientWidth * ratio;
+    let dH = display.clientHeight * ratio;
+
+    if (Settings.get("showControls") || Input.isMapping) {
+      if (dW > dH) {
+        dW /= 2;
+      } else {
         dH /= 2;
       }
+    }
 
+    if (Settings.get("snapPixels") && dW <= 1600) {
       const width = (Math.floor(dW / 320) * 320) / ratio;
       const height = (Math.floor(dH / 240) * 240) / ratio;
       const left = Math.round((dW / ratio - width) / 2);

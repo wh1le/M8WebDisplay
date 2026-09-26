@@ -1,3 +1,12 @@
+const userAgent = navigator.userAgent;
+const linux = /Linux/.test(userAgent) && !/Android/.test(userAgent);
+const deckScreen =
+  [screen.width, screen.height].sort((a, b) => a - b).join() === "800,1280";
+
+export const steamDeck =
+  /Valve Steam Client\/Steam Deck/.test(userAgent) ||
+  (linux && navigator.maxTouchPoints > 0 && deckScreen);
+
 export function show(query) {
   document.querySelectorAll(query).forEach((e) => {
     e.classList.remove("hidden");

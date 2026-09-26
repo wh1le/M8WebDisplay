@@ -18,7 +18,24 @@ export async function setup() {
 
   let firstInstall = !navigator.serviceWorker.controller;
 
-  const reg = await navigator.serviceWorker.register("worker.js");
+  const reg = await navigator.serviceWorker
+    .register("worker.js")
+    .catch(async () => {
+      if (!navigator.serviceWorker.controller) {
+        return;
+      }
+
+      const regs = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map((entry) => entry.unregister()));
+      const keys = await caches.keys();
+      await Promise.all(keys.map((key) => caches.delete(key)));
+      reload();
+    });
+
+  if (!reg) {
+    return;
+  }
+
   on(reg, "updatefound", () => {
     if (firstInstall) {
       firstInstall = false;

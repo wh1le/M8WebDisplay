@@ -68,6 +68,32 @@
         #controls {
             display: block;
         }
+
+        @media (min-aspect-ratio: 4/3) {
+            height: calc(100vw * 3 / 8);
+            max-width: calc(100vh * 8 / 3);
+
+            canvas, svg {
+                width: 50%;
+                height: 100%;
+            }
+
+            #controls {
+                width: 50%;
+                height: 100%;
+                top: 0;
+                left: 50%;
+            }
+
+            #mapping-buttons {
+                width: 50%;
+            }
+
+            #mapping-help {
+                bottom: 0;
+                width: 50%;
+            }
+        }
     }
 
     #controls {
@@ -88,8 +114,18 @@
             padding: 5px;
             text-align: center;
             font-size: 80%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             transition-property: border-color, background-color;
             transition-duration: 200ms;
+
+            &[data-action="up"],
+            &[data-action="down"],
+            &[data-action="left"],
+            &[data-action="right"] {
+                font-size: 160%;
+            }
 
             &.active {
                 border-color: #0cf;
