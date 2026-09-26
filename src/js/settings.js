@@ -1,3 +1,4 @@
+import { nativeAudio } from "./audio.js";
 import { appendButton, hide, on, toggle } from "./util.js";
 
 on("#menu-button", "click", () => toggle("#settings"));
@@ -13,7 +14,7 @@ const values = {};
 
 setupToggle("showControls", "Show Controls", false);
 setupToggle("hideMenu", "Hide Menu", false);
-setupToggle("enableAudio", "Enable Audio", true);
+setupToggle("enableAudio", "Enable Audio", !nativeAudio);
 
 setupSelect(
   "displayType",

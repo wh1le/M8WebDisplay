@@ -1,7 +1,10 @@
-import { off, on, wait } from "./util.js";
+import { off, on, show, wait } from "./util.js";
 
 let ctx;
 let enabled = true;
+
+export const nativeAudio =
+  /Linux/.test(navigator.userAgent) && !/Android/.test(navigator.userAgent);
 
 export async function start(attempts = 1) {
   if (ctx || !enabled) return;
@@ -9,7 +12,16 @@ export async function start(attempts = 1) {
   try {
     ctx = new AudioContext();
 
-    await navigator.mediaDevices.getUserMedia({ audio: true });
+    const probe = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        autoGainControl: false,
+        echoCancellation: false,
+        noiseSuppression: false,
+      },
+    });
+    probe.getTracks().forEach((track) => {
+      track.stop();
+    });
     let deviceId;
     while (true) {
       deviceId = await findDeviceId();
@@ -41,6 +53,9 @@ export async function start(attempts = 1) {
     }
   } catch (err) {
     console.error(err);
+    if (err.name === "NotAllowedError") {
+      show("#audio-fail");
+    }
     stop();
   }
 

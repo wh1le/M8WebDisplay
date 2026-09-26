@@ -4,7 +4,10 @@ import { fileURLToPath } from "node:url";
 import LocalWebServer from "local-web-server";
 import CliView from "lws/lib/view/cli-view.mjs";
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+const root = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../..",
+);
 
 // The site is served flat (`/main.js`, `/index.css`) both in development and
 // after a build. These rules point those URLs at the files they come from.
@@ -25,7 +28,7 @@ function option(name, fallback) {
 const key = option("key");
 const cert = option("cert");
 
-await LocalWebServer.create({
+const server = await LocalWebServer.create({
   directory: root,
   port: Number(option("port", 8000)),
   rewrite: routes.map(([from, to]) => `${from} -> ${to}`),
@@ -33,4 +36,11 @@ await LocalWebServer.create({
   logFormat: "dev",
   view: new CliView(),
   ...(key && { key, cert }),
+});
+
+server.on("verbose", (name, value) => {
+  if (name === "server.error") {
+    console.error(`\n${value.message}`);
+    process.exitCode = 1;
+  }
 });
