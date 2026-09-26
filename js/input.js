@@ -1,6 +1,3 @@
-// Copyright 2021-2022 James Deery
-// Released under the MIT licence, https://opensource.org/licenses/MIT
-
 import * as Keyboard from "./keyboard.js";
 import * as Settings from "./settings.js";
 import { appendButton, off, on } from "./util.js";

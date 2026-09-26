@@ -1,7 +1,4 @@
 #version 300 es
-// Copyright 2021 James Deery
-// Released under the MIT licence, https://opensource.org/licenses/MIT
-
 layout(location = 0) in vec4 shape;
 layout(location = 1) in vec3 colour;
 

@@ -1,7 +1,4 @@
 #version 300 es
-// Copyright 2021 James Deery
-// Released under the MIT licence, https://opensource.org/licenses/MIT
-
 layout(location = 0) in uint value;
 
 const vec2 camScale = vec2(2.0 / 320.0, -2.0 / 240.0);

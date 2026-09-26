@@ -1,6 +1,3 @@
-// Copyright 2022 James Deery
-// Released under the MIT licence, https://opensource.org/licenses/MIT
-
 import * as Settings from "./settings.js";
 import { on } from "./util.js";
 

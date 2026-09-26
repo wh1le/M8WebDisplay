@@ -1,6 +1,3 @@
-// Copyright 2021-2022 James Deery
-// Released under the MIT licence, https://opensource.org/licenses/MIT
-
 import { appendButton, hide, on, toggle } from "./util.js";
 
 on("#menu-button", "click", () => toggle("#settings"));

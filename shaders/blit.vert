@@ -1,7 +1,4 @@
 #version 300 es
-// Copyright 2021 James Deery
-// Released under the MIT licence, https://opensource.org/licenses/MIT
-
 out vec2 srcCoord;
 
 const vec2 corners[] = vec2[](

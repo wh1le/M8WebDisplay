@@ -1,6 +1,3 @@
-// Copyright 2021 James Deery
-// Released under the MIT licence, https://opensource.org/licenses/MIT
-
 export class Renderer {
   _canvas;
   _ctx;

@@ -1,6 +1,3 @@
-// Copyright 2021 James Deery
-// Released under the MIT licence, https://opensource.org/licenses/MIT
-
 import { readHexToBlocks } from "./hex.js";
 import { on, wait } from "./util.js";
 

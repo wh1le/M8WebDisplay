@@ -1,6 +1,3 @@
-// Copyright 2021-2022 James Deery
-// Released under the MIT licence, https://opensource.org/licenses/MIT
-
 import { off, on, wait } from "./util.js";
 
 let ctx;

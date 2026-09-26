@@ -1,6 +1,3 @@
-// Copyright 2021 James Deery
-// Released under the MIT licence, https://opensource.org/licenses/MIT
-
 import * as Settings from "./settings.js";
 
 const keyMap = Object.freeze({

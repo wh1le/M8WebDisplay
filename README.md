@@ -38,17 +38,17 @@ To build this project you need a standard unix-like environment and a recent-ish
 From a fresh clone, run this in your terminal:
 
 ```
-make run
+pnpm dev
 ```
 
 This will download the necessary node packages, build the files required to run a debug version of the display and launch a local web server. If this is successful you can open http://localhost:8000/ in Chrome to launch the display. Press `ctrl-c` to stop the server.
 
-You can edit the `*.js` files and simply refresh the page to see the changes. If you edit the `*.scss` files or the shaders you will need to run `make` to regenerate the necessary files before refreshing. You can do this from another terminal window/tab, there is no need to restart the server.
+You can edit the `*.js` files and simply refresh the page to see the changes. If you edit the `*.scss` files or the shaders you will need to run `pnpm build` to regenerate the necessary files before refreshing. You can do this from another terminal window/tab, there is no need to restart the server.
 
 Chrome requires that pages are served securely in order to enable features such as the Serial API. Normally this means using HTTPS but there is an exception when you use `localhost`. If you want to test your changes on another computer on your network you will need to run the local web server with HTTPS:
 
 ```
-make run HTTPS=true
+pnpm dev:https
 ```
 
 This will generate a certificate and the local web server will now work from `https://<your-computer-name>:8000` (the full list of addresses is shown in the command output). When you use this address you will need to either ignore the security warning or install the certificate at `cert/server.crt` as a trusted Certificate Authority on your device.
@@ -56,7 +56,7 @@ This will generate a certificate and the local web server will now work from `ht
 To build a release version of the display run:
 
 ```
-make deploy
+pnpm deploy
 ```
 
 This will build and copy the release files to the `deploy/` directory. These files can be hosted on any static web server as long as has an HTTPS address.

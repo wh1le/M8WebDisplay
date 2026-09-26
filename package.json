@@ -10,6 +10,12 @@
     "@biomejs/biome": "^2.5.14"
   },
   "scripts": {
+    "build": "scripts/build.sh",
+    "dev": "scripts/build.sh && ws --log.format dev --rewrite '/worker.js -> /js/worker.js' --blacklist /cert/private-key.pem",
+    "dev:https": "scripts/cert.sh && scripts/build.sh && ws --log.format dev --rewrite '/worker.js -> /js/worker.js' --blacklist /cert/private-key.pem --key cert/private-key.pem --cert cert/server.crt",
+    "serve": "ws --log.format dev --rewrite '/worker.js -> /js/worker.js' --port 8000",
+    "deploy": "scripts/build.sh && mkdir -p deploy && rm -rf deploy/* && cp build/index.html build/worker.js app.webmanifest build/icon.png deploy/",
+    "clean": "rm -rf build",
     "lint": "biome check .",
     "lint:fix": "biome check --write ."
   }

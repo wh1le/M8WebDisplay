@@ -1,6 +1,3 @@
-// Copyright 2021 James Deery
-// Released under the MIT licence, https://opensource.org/licenses/MIT
-
 import { font1 } from "../build/font1.js";
 import { font2 } from "../build/font2.js";
 import * as Shaders from "../build/shaders.js";
