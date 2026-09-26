@@ -1,6 +1,6 @@
-import { font1 } from "../build/font1.js";
-import { font2 } from "../build/font2.js";
-import * as Shaders from "../build/shaders.js";
+import { font1 } from "../../build/font1.js";
+import { font2 } from "../../build/font2.js";
+import * as Shaders from "../../build/shaders.js";
 
 const MAX_RECTS = 1024;
 

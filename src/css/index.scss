@@ -1,6 +1,6 @@
 @use 'common' as *;
-@use '../build/font1';
-@use '../build/font2';
+@use '../../build/font1';
+@use '../../build/font2';
 
 body {
     font-family: sans-serif;

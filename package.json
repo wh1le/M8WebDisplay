@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "dependencies": {
     "juice": "^7.0.0",
     "local-web-server": "^5.3.0",
@@ -11,10 +12,10 @@
   },
   "scripts": {
     "build": "scripts/build.sh",
-    "dev": "scripts/build.sh && ws --log.format dev --rewrite '/worker.js -> /js/worker.js' --blacklist /cert/private-key.pem",
-    "dev:https": "scripts/cert.sh && scripts/build.sh && ws --log.format dev --rewrite '/worker.js -> /js/worker.js' --blacklist /cert/private-key.pem --key cert/private-key.pem --cert cert/server.crt",
-    "serve": "ws --log.format dev --rewrite '/worker.js -> /js/worker.js' --port 8000",
-    "deploy": "scripts/build.sh && mkdir -p deploy && rm -rf deploy/* && cp build/index.html build/worker.js app.webmanifest build/icon.png deploy/",
+    "dev": "scripts/build.sh && node src/js/server.js",
+    "dev:https": "scripts/cert.sh && scripts/build.sh && node src/js/server.js --key cert/private-key.pem --cert cert/server.crt",
+    "serve": "node src/js/server.js --port 8000",
+    "deploy": "scripts/build.sh && mkdir -p deploy && rm -rf deploy/* && cp build/index.html build/worker.js build/app.webmanifest build/icon.png deploy/",
     "clean": "rm -rf build",
     "lint": "biome check .",
     "lint:fix": "biome check --write ."

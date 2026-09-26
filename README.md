@@ -43,7 +43,7 @@ pnpm dev
 
 This will download the necessary node packages, build the files required to run a debug version of the display and launch a local web server. If this is successful you can open http://localhost:8000/ in Chrome to launch the display. Press `ctrl-c` to stop the server.
 
-You can edit the `*.js` files and simply refresh the page to see the changes. If you edit the `*.scss` files or the shaders you will need to run `pnpm build` to regenerate the necessary files before refreshing. You can do this from another terminal window/tab, there is no need to restart the server.
+You can edit the files in `src/js/` and simply refresh the page to see the changes. If you edit the `*.scss` files or the shaders you will need to run `pnpm build` to regenerate the necessary files before refreshing. You can do this from another terminal window/tab, there is no need to restart the server.
 
 Chrome requires that pages are served securely in order to enable features such as the Serial API. Normally this means using HTTPS but there is an exception when you use `localhost`. If you want to test your changes on another computer on your network you will need to run the local web server with HTTPS:
 
@@ -60,6 +60,20 @@ pnpm deploy
 ```
 
 This will build and copy the release files to the `deploy/` directory. These files can be hosted on any static web server as long as has an HTTPS address.
+
+## Project layout
+
+```
+public/   files copied to the deploy root unchanged (icon.png, app.webmanifest)
+src/      all source: index.html, js/, css/, shaders/ and the assets embedded by the build
+scripts/  build.sh, ws.sh, cert.sh
+build/    generated output, not tracked
+```
+
+`index.html` refers to files the way the finished site lays them out (`index.css`,
+`main.js`, `worker.js`, `icon.png`, `app.webmanifest`). The dev server serves the
+repository root and rewrites those paths to the matching sources, so the same markup
+works before and after a build.
 
 ## TODO/Ideas
 
